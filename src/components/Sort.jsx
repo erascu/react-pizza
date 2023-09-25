@@ -1,6 +1,11 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSort } from '../redux/slices/filterSlice';
 
-function Sort({ sort, onChangeSort }) {
+function Sort() {
+    const dispatch = useDispatch();
+    const sort = useSelector(state => state.filter.sortId);
+
     const [open, setOpen] = React.useState(false);
     // const [selected, setSelected] = React.useState(0);
 
@@ -8,7 +13,7 @@ function Sort({ sort, onChangeSort }) {
     const sortName = list[sort]; //change category name when selected
 
     const onClickListItem = item => {
-        onChangeSort(item);
+        dispatch(setSort(item));
         setOpen(false);
     }
 

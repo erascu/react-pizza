@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { setCategoryId } from '../redux/slices/filterSlice';
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
@@ -10,17 +12,24 @@ import Pagination from '../components/Pagination/Pagination';
 import { SearchContext } from '../App';
 
 function Home() {
+    const dispatch = useDispatch();
+    const { categoryId, sortId } = useSelector(state => state.filter);
+
+    const onChangeCategory = id => {
+        dispatch(setCategoryId(id));
+    };
+
     const { searchValue } = React.useContext(SearchContext);
 
     const [items, setItems] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [currentPage, setCurrentPage] = React.useState(1);
 
-    const [categoryId, setCategoryId] = React.useState(0);
-    const [sort, setSort] = React.useState(0);
+    // const [categoryId, setCategoryId] = React.useState(0);
+    // const [sort, setSort] = React.useState(0);
 
     const sortList = ['-rating', '-price', 'price', 'title', '-title'];
-    const sortBy = sortList[sort];
+    const sortBy = sortList[sortId];
 
     const category = categoryId > 0 ? `&category=${categoryId}*` : '';
     const search = searchValue ? `&title=${searchValue}*` : ''; //search through backend for needed products
@@ -37,18 +46,18 @@ function Home() {
                 setIsLoading(false);
 
             } catch (error) {
-                console.log(`Something went wrong: ${error}`);
+                console.log(error);
             }
         }
         getData();
         window.scrollTo(0, 0); //scrolls the main page up (if we'd were on other page, on the bottom of it and clicked to go back to main page)
-    }, [categoryId, sort, category, sortBy, search, currentPage]);
+    }, [category, sortBy, search, currentPage]);
     return (
         <>
             <div className="container">
                 <div className="content__top">
-                    <Categories categoryId={categoryId} onChangeCategory={setCategoryId} />
-                    <Sort sort={sort} onChangeSort={(i) => setSort(i)} />
+                    <Categories categoryId={categoryId} onChangeCategory={onChangeCategory} />
+                    <Sort />
                 </div>
                 <h2 className="content__title">Все пиццы</h2>
                 <div className="content__items">
