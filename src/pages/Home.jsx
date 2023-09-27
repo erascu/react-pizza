@@ -37,19 +37,15 @@ function Home() {
     React.useEffect(() => {
         setIsLoading(true);
 
-        async function getData() {
-            try {
-                const resp = await axios.get(`https://3ba110d5c322f598.mokky.dev/items?page=${currentPage}&limit=8&sortBy=${sortBy}${category}${search}`);
-                // const resp = await axios.get('https://steepy.free.mockoapp.net/items');
-
+        try {
+            axios.get(`https://3ba110d5c322f598.mokky.dev/items?page=${currentPage}&limit=8&sortBy=${sortBy}${category}${search}`).then(resp => {
                 setItems(resp.data);
                 setIsLoading(false);
+            });
+        } catch (error) {
+            console.log(error);
+        };
 
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getData();
         window.scrollTo(0, 0); //scrolls the main page up (if we'd were on other page, on the bottom of it and clicked to go back to main page)
     }, [category, sortBy, search, currentPage]);
     return (
