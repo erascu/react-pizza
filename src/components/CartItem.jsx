@@ -43,7 +43,7 @@ function CartItem() {
 
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
