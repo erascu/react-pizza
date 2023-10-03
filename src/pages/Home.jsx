@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { setCategoryId } from '../redux/slices/filterSlice';
+import { setCategoryId, setCurrentPage } from '../redux/slices/filterSlice';
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
@@ -13,7 +13,11 @@ import { SearchContext } from '../App';
 
 function Home() {
     const dispatch = useDispatch();
-    const { categoryId, sortId } = useSelector(state => state.filter);
+    const { categoryId, sortId, currentPage } = useSelector(state => state.filter);
+
+    const onChangePage = num => {
+        dispatch(setCurrentPage(num));
+    }
 
     const onChangeCategory = id => {
         dispatch(setCategoryId(id));
@@ -23,7 +27,7 @@ function Home() {
 
     const [items, setItems] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
-    const [currentPage, setCurrentPage] = React.useState(1);
+    // const [currentPage, setCurrentPage] = React.useState(1);
 
     // const [categoryId, setCategoryId] = React.useState(0);
     // const [sort, setSort] = React.useState(0);
@@ -32,7 +36,7 @@ function Home() {
     const sortBy = sortList[sortId];
 
     const category = categoryId > 0 ? `&category=${categoryId}*` : '';
-    const search = searchValue ? `&title=${searchValue}*` : ''; //search through backend for needed products
+    const search = searchValue ? `&title=*${searchValue}*` : ''; //search through backend for needed products
 
     React.useEffect(() => {
         setIsLoading(true);
@@ -65,7 +69,7 @@ function Home() {
                         return item.title.toLowerCase().includes(searchValue.toLowerCase())
                     }).map((item, idx) => <PizzaBlock key={idx} {...item} />)}
                 </div>
-                <Pagination setCurrentPage={setCurrentPage} />
+                <Pagination currentPage={currentPage} onChangePage={onChangePage} />
             </div>
         </>
     )
