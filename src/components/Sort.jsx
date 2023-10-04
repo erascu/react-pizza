@@ -1,26 +1,37 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSort } from '../redux/slices/filterSlice';
+import { setSort, setPopUp } from '../redux/slices/filterSlice';
 
 function Sort() {
-    const dispatch = useDispatch();
-    const sort = useSelector(state => state.filter.sortId);
+    const sortRef = React.useRef();
 
-    const [open, setOpen] = React.useState(false);
-    // const [selected, setSelected] = React.useState(0);
+    const dispatch = useDispatch();
+    const { sortId, popUp } = useSelector(state => state.filter);
 
     const list = ['популярности', 'цене ↑', 'цене ↓', 'алфавиту ↑', 'алфавиту ↓'];
-    const sortName = list[sort]; //change category name when selected
+    const sortName = list[sortId]; //change category name when selected
 
     const onClickListItem = item => {
         dispatch(setSort(item));
-        setOpen(false);
+        dispatch(setPopUp(false));
     }
 
+    React.useEffect(() => {
+        const handleClickOutside = e => {
+            if (!e.composedPath().includes(sortRef.current)) {
+                dispatch(setPopUp(false));
+            }
+        }
+
+        document.body.addEventListener('click', handleClickOutside);
+
+        return () => document.body.removeEventListener('click', handleClickOutside); //in return we unmound handleClickOutside
+    }, []); //this hook let us close the sort popUp if we click outside it
+
     return (
-        <div className="sort">
+        <div ref={sortRef} className="sort">
             <div className="sort__label">
-                {open ? <svg
+                {popUp ? <svg
                     transform='rotate(180)'
                     width="10"
                     height="6"
@@ -45,12 +56,12 @@ function Sort() {
                     />
                 </svg>}
                 <b>Сортировка по:</b>
-                <span onClick={() => setOpen(!open)}>{sortName}</span> {/* setOpen(!open) - toggle */}
+                <span onClick={() => dispatch(setPopUp(!popUp))}>{sortName}</span> {/* setPopUp(!popUp) - toggle */}
             </div>
-            {open && <div className="sort__popup">
+            {popUp && <div className="sort__popup">
                 <ul>
                     {list.map((item, idx) => (
-                        <li key={idx} onClick={() => onClickListItem(idx)} className={sort === idx ? "active" : ''}>{item}</li>
+                        <li key={idx} onClick={() => onClickListItem(idx)} className={sortId === idx ? "active" : ''}>{item}</li>
                     ))}
                 </ul>
             </div>}

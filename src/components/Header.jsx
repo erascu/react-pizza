@@ -1,12 +1,11 @@
 import React from 'react';
 
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Search from './Search/Search';
 
-import { SearchContext } from '../App';
-
 function Header() {
-    const { searchValue, setSearchValue } = React.useCallback(SearchContext);
+    const { items, totalPrice } = useSelector(state => state.cart);
     return (
         <div className="header">
             <div className="container">
@@ -19,13 +18,13 @@ function Header() {
                         </div>
                     </div>
                 </Link>
-                <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+                <Search />
                 <div className="header__cart">
                     <Link to="/cart" className="button button--cart">
-                        <span>520 лей</span>
+                        <span>{totalPrice} лей</span>
                         <div className="button__delimiter"></div>
                         <img src="./img/cart.svg" alt="Cart" />
-                        <span>3</span>
+                        <span>{items.length}</span>
                     </Link>
                 </div>
             </div>

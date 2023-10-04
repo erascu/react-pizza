@@ -9,11 +9,9 @@ import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination/Pagination';
 
-import { SearchContext } from '../App';
-
 function Home() {
     const dispatch = useDispatch();
-    const { categoryId, sortId, currentPage } = useSelector(state => state.filter);
+    const { categoryId, sortId, currentPage, searchValue } = useSelector(state => state.filter);
 
     const onChangePage = num => {
         dispatch(setCurrentPage(num));
@@ -23,14 +21,8 @@ function Home() {
         dispatch(setCategoryId(id));
     };
 
-    const { searchValue } = React.useContext(SearchContext);
-
     const [items, setItems] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
-    // const [currentPage, setCurrentPage] = React.useState(1);
-
-    // const [categoryId, setCategoryId] = React.useState(0);
-    // const [sort, setSort] = React.useState(0);
 
     const sortList = ['-rating', '-price', 'price', 'title', '-title'];
     const sortBy = sortList[sortId];
