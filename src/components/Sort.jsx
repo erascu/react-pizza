@@ -16,7 +16,7 @@ function Sort() {
         dispatch(setPopUp(false));
     }
 
-    React.useEffect(() => {
+    React.useEffect(() => { //mount - did mount
         const handleClickOutside = e => {
             if (!e.composedPath().includes(sortRef.current)) {
                 dispatch(setPopUp(false));
@@ -25,7 +25,7 @@ function Sort() {
 
         document.body.addEventListener('click', handleClickOutside);
 
-        return () => document.body.removeEventListener('click', handleClickOutside); //in return we unmound handleClickOutside
+        return () => document.body.removeEventListener('click', handleClickOutside); //in return we unmount handleClickOutside
     }, []); //this hook let us close the sort popUp if we click outside it
 
     return (

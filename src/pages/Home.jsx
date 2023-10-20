@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { setCategoryId, setCurrentPage } from '../redux/slices/filterSlice';
+import { setItems } from '../redux/slices/pizzaSlice';
+
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
@@ -11,7 +13,9 @@ import Pagination from '../components/Pagination/Pagination';
 
 function Home() {
     const dispatch = useDispatch();
+
     const { categoryId, sortId, currentPage, searchValue } = useSelector(state => state.filter);
+    const { items } = useSelector(state => state.pizza);
 
     const onChangePage = num => {
         dispatch(setCurrentPage(num));
@@ -21,7 +25,7 @@ function Home() {
         dispatch(setCategoryId(id));
     };
 
-    const [items, setItems] = React.useState([]);
+    // const [items, setItems] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
 
     const sortList = ['-rating', '-price', 'price', 'title', '-title'];
@@ -35,18 +39,19 @@ function Home() {
 
         async function getData() {
             try {
-                const resp = await axios.get(`https://3ba110d5c322f598.mokky.dev/items?page=${currentPage}&limit=8&sortBy=${sortBy}${category}${search}`);
+                const { data } = await axios.get(`https://3ba110d5c322f598.mokky.dev/items?page=${currentPage}&limit=8&sortBy=${sortBy}${category}${search}`);
                 // const resp = await axios.get('https://steepy.free.mockoapp.net/items');
 
-                setItems(resp.data);
+                dispatch(setItems(data));
                 setIsLoading(false);
-
             } catch (error) {
                 console.log(error);
             }
         }
         getData();
         window.scrollTo(0, 0); //scrolls the main page up (if we'd were on other page, on the bottom of it and clicked to go back to main page)
+
+        // eslint-disable-next-line
     }, [category, sortBy, search, currentPage]);
     return (
         <>
